@@ -5,5 +5,5 @@ DEPS = test.h
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-fork: fork.o 
-	$(CC) -o fork fork.o
+ordenArchivo: ordenArchivo.o 
+	$(CC) -o ordenArchivo ordenArchivo.o
