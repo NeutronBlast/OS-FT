@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include "manejoArchivos.h"
-#include "procesosIntermedios.h"
+#include "slice.h"
 
 
 int main(int argc, char *argv[]) {
@@ -24,17 +24,17 @@ int main(int argc, char *argv[]) {
 
     len = strlen(argv[3]);
     /*Nombre archivo de entrada*/
-    char * file1 = malloc(len+3);
+    char * file1 = malloc(len+5);
     strcpy(file1, argv[3]);
     strcat(file1,".txt");
 
     len = strlen(argv[4]);
     /*Nombre archivo de salida*/
-    char * file2 = malloc(len+3);
+    char * file2 = malloc(len+5);
     strcpy(file2, argv[4]);   
 
     /*Texto a encriptar o desencriptar*/
-    char vector [NumHijos];
+    char vector [1000];
 
     printf("La operacion es: %s\n",operacion); 
     printf("El numero de enteros a ordenar es: %d\n",NumHijos); 
@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
     abrirArchivoEntrada(file1, vector, NumHijos);
 
     int i = 1;
+    int length = strlen(vector);
 
     if (operacion[1] == 'd'){
         printf("Toca desencriptar\n");
@@ -52,6 +53,8 @@ int main(int argc, char *argv[]) {
     else if (operacion[1] == 'c'){
         printf("Toca encriptar\n");
     }
-    //mergeSort(vector,NumHijos);
+
+    children(vector,length,NumHijos);
+
     return 0; 
 }
