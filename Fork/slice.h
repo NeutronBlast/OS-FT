@@ -9,10 +9,17 @@ void children(char vector[], int length, int niveles){
 //Father code (before child processes start)
     for (int progress=0; progress<niveles; progress++) {
     for (int id=0; id<1; id++) {
-    //Create 2 children
         if ((child_pid = fork()) == 0) {
+            sleep(progress);
             slice(vector,length,niveles);
-            //child code
+            for (int g = 0; g<niveles; g++){
+                //Nietos
+                if ((child_pid = fork()) == 0) {
+                slice(vector,length,niveles);
+                exit(0);
+                }
+            }
+            while ((wpid = wait(&status)) > 0); // this way, the father waits for all the child processes 
             exit(0);
         }
     }
