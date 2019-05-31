@@ -1,7 +1,6 @@
 void llenarVector(FILE *e, int vector [], int n) {
 	for (int i=0; i<n; i++){
 		fscanf(e, "%d", &vector[i]);
-		printf("value %d\n", vector[i]);
 	}
 
  fclose(e);

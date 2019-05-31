@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "manejoArchivos.h"
+#include "procesosIntermedios.h"
 
 int main(int argc, char *argv[]) {
     /*Tomar los argumentos de la linea de comando*/
@@ -28,5 +33,6 @@ int main(int argc, char *argv[]) {
     printf("El nombre del archivo desordenado es: %s\n", file1);
     printf("El nombre del archivo ordenado es: %s\n\n", file2); 
     abrirArchivoEntrada(file1, vector, NumEnteros);
+    mergeSort(vector,NumEnteros,NumNiveles);
     return 0; 
 }
