@@ -6,14 +6,12 @@ void concatChildren(char message[], char salida[], pid_t children[], int niveles
 
     fp = fopen(salida, "w");
 
-	for(int inicio; inicio<niveles; inicio++){
+	for(int inicio = 0; inicio<niveles; inicio++){
         strcpy(name,"");
         sprintf(name, "%d", children[inicio]);
         strcat(name,".txt");
         gc = fopen(name, "r");
-            while (!feof(gc)){
                 fgets(texto, 1500, gc);
-            }
         fclose(gc);
 		fprintf(fp, "%s", texto);
 	}
@@ -31,15 +29,13 @@ void childFIle(char message[], pid_t child, int nc,int op){
     strcat(name,".txt");
 
     fp = fopen(name, "r");
-     while (!feof(fp)){
         fgets(texto, 500, fp);
-    }
     if (op == 2)
         encriptarM(texto,0,nc);
     
     else
     {
-        desencriptarM(texto,0,nc);
+        desencriptar(texto,0,nc);
     }
     
     
@@ -58,22 +54,23 @@ void concatGrandChildren(char message[], pid_t child, pid_t grandChildren[], int
     FILE *gc;
     char name [50];
     char texto[50];
+
     sprintf(name, "%d", child);
     strcat(name,".txt");
     //printf("Nombre de archivo hijo es %s\n", name);
 
     fp = fopen(name, "w");
 
-	for(int inicio; inicio<niveles; inicio++){
+	for(int inicio=0; inicio<niveles; inicio++){
         strcpy(name,"");
         sprintf(name, "%d", grandChildren[inicio]);
         strcat(name,".txt");
         gc = fopen(name, "r");
-            while (!feof(gc)){
-                fgets(texto, 50, gc);
-            }
-        fclose(gc);
+        fgets(texto, 50, gc);
+
 		fprintf(fp, "%s", texto);
+        fclose(gc);
+
 	}
 
     fclose(fp);
@@ -101,9 +98,7 @@ void grandChildFIle(char message[], pid_t grandChild, int inicio, int nc){
 
 void llenarVector(FILE *e, char texto [], int n) {
     int l;
-    while (!feof(e)){
         fgets(texto, 1000, e);
-    }
 
     l = strlen(texto);
     printf("%s\n", texto);

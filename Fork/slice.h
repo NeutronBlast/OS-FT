@@ -67,21 +67,23 @@ void children(char vector[], int length, int niveles, int inicio, int op, char s
                     }
 
                 if (op == 1){
-                    /*Desencriptar en cesar*/
-                    //desencriptar(vector,inicionietos,nietos);
-                    //grandChildFIle(vector,getpid(),inicionietos,nietos);
+                    /*desencriptarM(vector,inicionietos,nietos);
+                    grandChildFIle(vector,getpid(),inicionietos,nietos);*/
                 }
 
                 else if (op == 2){
                     /*Encriptar en cesar*/
                     encriptar(vector,inicionietos,nietos);
+                    fflush(stdin);
                     fflush(stdout);
                     grandChildFIle(vector,getpid(),inicionietos,nietos);
+                    fflush(stdin);
                     fflush(stdout);
                 }
 
                 //Each grandchildren takes a different beginning, so first has to wait before creating a second one and so on
                 waitpid(grandchild_pid[g],&status,WNOHANG);
+                fflush(stdin);
                 fflush(stdout);
                 exit(0);
                 }
@@ -91,8 +93,9 @@ void children(char vector[], int length, int niveles, int inicio, int op, char s
             //All grandchildren pids, saves the one I created last in first position
             for (int q=niveles-1; q>=0; q--) {
                 /*do not comment this printf*/
+                fflush(stdin);
                 fflush(stdout);
-                printf("Saved grandchild %d pid %d\n", q,grandchild_pid[q]);
+                //printf("Saved grandchild %d pid %d\n", q,grandchild_pid[q]);                
                 concatGrandChildren(vector, getpid(), grandchild_pid, niveles);
             }
 
