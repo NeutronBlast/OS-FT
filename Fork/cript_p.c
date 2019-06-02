@@ -6,8 +6,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
-#include "manejoArchivos.h"
 #include "encript.h"
+#include "manejoArchivos.h"
 #include "slice.h"
 
 
@@ -31,8 +31,9 @@ int main(int argc, char *argv[]) {
 
     len = strlen(argv[4]);
     /*Nombre archivo de salida*/
-    char * file2 = malloc(len+5);
-    strcpy(file2, argv[4]);   
+    char * file2 = malloc(len+10);
+    strcpy(file2, argv[4]); 
+    strcat(file2,".txt");  
 
     /*Texto a encriptar o desencriptar*/
     char vector [1000];
@@ -59,7 +60,7 @@ int main(int argc, char *argv[]) {
 
     /*Crear arbol de procesos*/
     int inicio=0;
-    children(vector,length,NumHijos, inicio, op);
+    children(vector,length,NumHijos, inicio, op,file2);
 
     return 0; 
 }
