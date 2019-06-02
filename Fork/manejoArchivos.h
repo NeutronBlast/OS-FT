@@ -42,7 +42,7 @@ void childFIle(char message[], pid_t child, int nc,int op){
     fclose(fp);
 
     fp = fopen(name,"w");
-	for(int inicio = 0; inicio<=fin; inicio++){
+	for(int inicio = 0; inicio<fin; inicio++){
 		fprintf(fp, "%c", texto[inicio]);
 	}
 
@@ -77,7 +77,7 @@ void concatGrandChildren(char message[], pid_t child, pid_t grandChildren[], int
 }
 
 
-void grandChildFIle(char message[], pid_t grandChild, int inicio, int nc){
+void grandChildFIle(char message[], pid_t grandChild, int inicio, int nc,int length){
     int fin = inicio+nc;
     int aux = inicio;
     FILE *fp;
@@ -88,9 +88,13 @@ void grandChildFIle(char message[], pid_t grandChild, int inicio, int nc){
     //printf("Nombre de archivo es %s\n", name);
 
     fp = fopen(name, "w");
-	for(inicio; inicio<=fin; inicio++){
+	for(inicio; inicio<fin; inicio++){
 		fprintf(fp, "%c", message[inicio]);
 	}
+
+    if (length == inicio)
+        fprintf(fp, "%c", message[inicio]);
+
 
     fclose(fp);
 }
@@ -101,8 +105,8 @@ void llenarVector(FILE *e, char texto [], int n) {
         fgets(texto, 1000, e);
 
     l = strlen(texto);
-    printf("%s\n", texto);
-    printf("%d\n", l);
+    //printf("%s\n", texto);
+    //printf("%d\n", l);
 
  fclose(e);
 }
@@ -116,7 +120,7 @@ void abrirArchivoEntrada (char * nombre, char texto[], int n){
 				printf("Archivo se encuentra vacio o no existe\n");
 			}
             else { 
-                printf("Archivo cargado con exito\n");    
+                //printf("Archivo cargado con exito\n");    
                 llenarVector(e,texto,n);
             }
 }

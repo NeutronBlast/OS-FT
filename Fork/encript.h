@@ -2,7 +2,7 @@ void encriptarM(char message[], int inicio, int nc){
 	int fin = inicio+nc;
     int aux = inicio;
 
-	for (inicio; inicio<fin; inicio++){
+	for (inicio; inicio<=fin; inicio++){
 		
 		if(message[inicio]=='m' || message[inicio]=='M'){
 			message[inicio]=48;	
@@ -54,7 +54,7 @@ void encriptar(char message[], int inicio, int nc){
 	int fin = inicio+nc;
     int aux = inicio;
 	char ch;	
-	for(inicio; inicio<fin; inicio++){
+	for(inicio; inicio<=fin; inicio++){
 		ch = message[inicio];
 		
 		if(ch >= 'a' && ch <= 'z'){

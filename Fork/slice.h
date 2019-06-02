@@ -33,7 +33,7 @@ void children(char vector[], int length, int niveles, int inicio, int op, char s
 
     int inicionietos = inicio;
 
-    length = removeSpace(vector,length);
+    length = removeSpace(vector,length)-1;
      //printf("Text after removing blanks\n%s\n", vector);
      //printf("New length %d\n", length);
 
@@ -54,9 +54,10 @@ void children(char vector[], int length, int niveles, int inicio, int op, char s
 
             slice(vector,length,niveles,inicio,nc);
             for (int g = 0; g<niveles; g++){
+                nietos = 0;
+                nietos = (nc/niveles) + (nc%niveles);
                 //Nietos
                 if ((grandchild_pid[g] = fork()) == 0) {
-
                 //printf("Nieto %d empieza en %d\n", g,inicionietos);
                 //printf("child pid %d   parent pid %d\n",getpid(),getppid());fflush(stdout);
 
@@ -67,8 +68,8 @@ void children(char vector[], int length, int niveles, int inicio, int op, char s
                     }
 
                 if (op == 1){
-                    /*desencriptarM(vector,inicionietos,nietos);
-                    grandChildFIle(vector,getpid(),inicionietos,nietos);*/
+                    desencriptarM(vector,inicionietos,nietos);
+                    grandChildFIle(vector,getpid(),inicionietos,nietos,length);
                 }
 
                 else if (op == 2){
@@ -76,7 +77,7 @@ void children(char vector[], int length, int niveles, int inicio, int op, char s
                     encriptar(vector,inicionietos,nietos);
                     fflush(stdin);
                     fflush(stdout);
-                    grandChildFIle(vector,getpid(),inicionietos,nietos);
+                    grandChildFIle(vector,getpid(),inicionietos,nietos,length);
                     fflush(stdin);
                     fflush(stdout);
                 }
@@ -101,7 +102,7 @@ void children(char vector[], int length, int niveles, int inicio, int op, char s
 
             
             if (op == 1){
-                //childFIle(vector,getpid(),nc,op);
+                childFIle(vector,getpid(),nc,op);
             }
 
             else if (op == 2){
@@ -111,7 +112,7 @@ void children(char vector[], int length, int niveles, int inicio, int op, char s
             exit(0);
         }
     }
-    inicio = inicio + nc;
+    inicio = inicio + nc ;
     }
 
 while ((wpid = wait(&status)) > 0); // this way, the father waits for all the child processes 
