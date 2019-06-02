@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include "manejoArchivos.h"
+#include "encript.h"
 #include "slice.h"
 
 
@@ -48,13 +49,17 @@ int main(int argc, char *argv[]) {
 
     if (operacion[1] == 'd'){
         printf("Toca desencriptar\n");
+        op = 1;
     }
 
     else if (operacion[1] == 'c'){
         printf("Toca encriptar\n");
+        op = 2;
     }
 
-    children(vector,length,NumHijos);
+    /*Crear arbol de procesos*/
+    int inicio=0;
+    children(vector,length,NumHijos, inicio, op);
 
     return 0; 
 }
