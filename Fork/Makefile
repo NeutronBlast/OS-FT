@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-I.
-DEPS = encript.h manejoArchivos.h slice.h
+DEPS = encript.h decypher.h manejoArchivos.h slice.h
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)

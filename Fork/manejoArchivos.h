@@ -21,7 +21,7 @@ void concatChildren(char message[], char salida[], pid_t children[], int niveles
     fclose(fp);
 }
 
-void childFIle(char message[], pid_t child, int nc){
+void childFIle(char message[], pid_t child, int nc,int op){
     int fin = nc;
     FILE *fp;
 
@@ -34,8 +34,15 @@ void childFIle(char message[], pid_t child, int nc){
      while (!feof(fp)){
         fgets(texto, 500, fp);
     }
-
-    encriptarM(texto,0,nc);    
+    if (op == 2)
+        encriptarM(texto,0,nc);
+    
+    else
+    {
+        desencriptarM(texto,0,nc);
+    }
+    
+    
     fclose(fp);
 
     fp = fopen(name,"w");

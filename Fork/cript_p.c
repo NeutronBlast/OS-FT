@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include "encript.h"
+#include "decypher.h"
 #include "manejoArchivos.h"
 #include "slice.h"
 
