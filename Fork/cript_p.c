@@ -13,7 +13,6 @@
 #include "manejoArchivos.h"
 #include "slice.h"
 
-
 int main(int argc, char *argv[]) {
     setlocale(LC_ALL,"");
     struct timeval begin, end;
@@ -49,9 +48,10 @@ int main(int argc, char *argv[]) {
     printf("El nombre del archivo desordenado es: %s\n", file1);
     printf("El nombre del archivo ordenado es: %s\n\n", file2); */
 
-    abrirArchivoEntrada(file1, vector, NumHijos);
+    abrirArchivoEntrada(file1, vector);
 
     int i = 1;
+
     int length = strlen(vector);
 
     if (operacion[1] == 'd'){
@@ -66,7 +66,20 @@ int main(int argc, char *argv[]) {
 
     /*Crear arbol de procesos*/
     int inicio=0;
-    children(vector,length,NumHijos, inicio, op,file2);
+    int fin = 0;
+
+if (op==2)
+    length = removeSpace(vector,length)-2;
+
+else
+    length = strlen(vector);
+
+     printf("Text after removing blanks\n%s\n", vector);
+     printf("New length %d\n", length);
+
+    replace(file1,vector);
+
+    children(file1,length,NumHijos, inicio, op,fin,file2);
     gettimeofday(&end,NULL);
     printf("Fin del programa, tiempo total de ejecucion %f segundos\n", (double)(end.tv_usec - begin.tv_usec)/1000000+ (double)(end.tv_sec - begin.tv_sec)) ;
     return 0; 

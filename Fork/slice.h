@@ -1,83 +1,81 @@
-void slice(char vector[], int length, int niveles, int inicio, int nc){
-}
-
-int removeSpace(char * vector, int length){
-
-    // To keep track of non-space character count 
-    int count = 0; 
-
-    // Traverse the given string. If current character 
-    // is not space, then place it at index 'count++' 
-    for (int i = 0; vector[i]; i++) 
-        if (vector[i] != ' ') 
-            vector[count++] = vector[i]; // here count is 
-                                   // incremented 
-    vector[count] = '\0'; 
-    return strlen(vector);
- 
-}
-
-void children(char vector[], int length, int niveles, int inicio, int op, char salida[]){
+void children(char entrada[], int length, int niveles, int inicio, int op, int fin, char salida[]){
     /*Inicio indica donde va a iniciar cada hijo al cifrar el texto*/
     pid_t child_pid[100], wpid;
     int status = 0;
     pid_t grandchild_pid[100];
 
-    int nc = length/niveles;
+    //int nc = length/niveles;
+	int finNieto = 0;
+    int nietos = 0;
+
 
     //printf("A cada proceso hijo le corresponde %d caracteres\n", nc);
 
-    int nietos = nc/niveles;
+    //int nietos = nc/niveles;
 
     //printf("A cada proceso nieto le corresponde %d caracteres\n",  nietos);
 
-    int inicionietos = inicio;
-
-    length = removeSpace(vector,length)-1;
-     //printf("Text after removing blanks\n%s\n", vector);
-     //printf("New length %d\n", length);
+    //int inicionietos = inicio;
+	int mult = 1; //Multiplicador
+		fin = (mult*(length/niveles))-1;
 
 //Father code (before child processes start)
+
     for (int progress=0; progress<niveles; progress++) {
+if (progress > 0) fin = (mult*(length/niveles))-1;
     for (int id=0; id<1; id++) {
         if ((child_pid[progress] = fork()) == 0) {
-            inicionietos = inicio;
+
+            //inicionietos = inicio;
+
+fin = (mult*(length/niveles))-1;
             sleep(progress);
             //printf("Hijo %d empieza en %d\n", progress, inicio);
             //printf("child pid %d   parent pid %d\n",getpid(),getppid());fflush(stdout);
             
                 if (progress+1 == niveles){
+			fin = length;
                     /*Añadir lo que sobra en caso de division inexacta, si no sobra nada añade 0*/
-                    nc = (length/niveles) + (length%niveles);
+                    //nc = (length/niveles) + (length%niveles);
                     //printf("Division inexacta, a este ultimo hijo le corresponde %d caracteres\n\n\n\n", nc);
                 }
+	printf("Hijo comienza en %d , termina en %d , con multiplicador %d\n", inicio, fin ,mult);
 
-            slice(vector,length,niveles,inicio,nc);
-            for (int g = 0; g<niveles; g++){
-                nietos = 0;
-                nietos = (nc/niveles) + (nc%niveles);
+		int inicionietos = inicio;
+		int multnietos = 1;
+        int nc = 0;
+        nc = fin-inicio;
+                printf("nc %d\n",nc);
+
+            for (int g = 0; g<niveles; g++,inicionietos=finNieto+1,multnietos++){
+                if (g == 0) finNieto = (multnietos*(nc/niveles))-1;
+                else if (g>0 && g+1 < niveles) finNieto = (multnietos*(nc/niveles));
+
+                if (progress != 0) finNieto = (multnietos*(nc/niveles))+inicio;
+
                 //Nietos
                 if ((grandchild_pid[g] = fork()) == 0) {
                 //printf("Nieto %d empieza en %d\n", g,inicionietos);
                 //printf("child pid %d   parent pid %d\n",getpid(),getppid());fflush(stdout);
 
                     if (g+1 == niveles){
+			finNieto = fin;
                     /*Añadir lo que sobra en caso de division inexacta, si no sobra nada añade 0*/
-                    nietos = (nc/niveles) + (nc%niveles);
+                    //nietos = (nc/niveles) + (nc%niveles);
                     //printf("Division inexacta, a este ultimo nieto le corresponde %d caracteres\n", nietos);
+			
                     }
+		printf("Nieto inicia en %d termina en %d con multiplicador %d\n",inicionietos,finNieto,multnietos);
 
                 if (op == 1){
-                    desencriptarM(vector,inicionietos,nietos);
-                    grandChildFIle(vector,getpid(),inicionietos,nietos,length);
+                    grandChildFIle(entrada,getpid(),inicionietos,finNieto,length,1);
                 }
 
                 else if (op == 2){
                     /*Encriptar en cesar*/
-                    encriptar(vector,inicionietos,nietos);
                     fflush(stdin);
                     fflush(stdout);
-                    grandChildFIle(vector,getpid(),inicionietos,nietos,length);
+                    grandChildFIle(entrada,getpid(),inicionietos,finNieto,length,2);
                     fflush(stdin);
                     fflush(stdout);
                 }
@@ -87,8 +85,8 @@ void children(char vector[], int length, int niveles, int inicio, int op, char s
                 fflush(stdin);
                 fflush(stdout);
                 exit(0);
+                
                 }
-                inicionietos =  inicionietos + nietos;
             }
             while ((wpid = wait(&status)) > 0); // this way, the father waits for all the child processes 
             //All grandchildren pids, saves the one I created last in first position
@@ -97,22 +95,29 @@ void children(char vector[], int length, int niveles, int inicio, int op, char s
                 fflush(stdin);
                 fflush(stdout);
                 //printf("Saved grandchild %d pid %d\n", q,grandchild_pid[q]);                
-                concatGrandChildren(vector, getpid(), grandchild_pid, niveles);
             }
+
+            concatGrandChildren(getpid(), grandchild_pid, niveles);
 
             
             if (op == 1){
-                childFIle(vector,getpid(),nc,op);
+                childFIle(getpid(),fin,op);
             }
 
             else if (op == 2){
-                childFIle(vector,getpid(),nc,op);
+                childFIle(getpid(),fin,op);
             }
+
 
             exit(0);
         }
+
     }
-    inicio = inicio + nc ;
+    //inicio = inicio + nc ;
+printf("fin %d\n",fin);
+	inicio = fin+1;
+printf("nuevo inicio es igual a %d\n", inicio);
+	mult++;
     }
 
 while ((wpid = wait(&status)) > 0); // this way, the father waits for all the child processes 
@@ -122,6 +127,6 @@ while ((wpid = wait(&status)) > 0); // this way, the father waits for all the ch
     for (int p=0; p<niveles; p++) {
         //printf("Saved child %d pid %d\n", p,child_pid[p]);
     } 
-        concatChildren(vector,salida,child_pid,niveles);
+        concatChildren(salida,child_pid,niveles);
 
 }

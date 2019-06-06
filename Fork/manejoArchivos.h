@@ -1,4 +1,32 @@
-void concatChildren(char message[], char salida[], pid_t children[], int niveles){
+void deleteGarbage(pid_t grandChildren[], int niveles){
+    FILE *fp;
+    char name [50];
+    int status, f;
+
+    for(int inicio=0; inicio<niveles; inicio++){
+        sprintf(name, "%d", grandChildren[inicio]);
+        strcat(name,".txt");
+        status = remove(name);
+    }
+}
+
+void seek (char * nombre, char texto[], int inicio){
+    FILE *e;
+    e = fopen(nombre, "r");
+			if (e == NULL) 
+				/*Si hay errores en el archivo*/
+			{
+				printf("Archivo se encuentra vacio o no existe\n");
+			}
+            else { 
+                //printf("Archivo cargado con exito\n");    
+                fseek(e,inicio,SEEK_SET);
+                fgets(texto,1500,e);
+            }
+    fclose(e);
+}
+
+void concatChildren(char salida[], pid_t children[], int niveles){
     FILE *fp;
     FILE *gc;
     char texto[1500];
@@ -17,10 +45,12 @@ void concatChildren(char message[], char salida[], pid_t children[], int niveles
 	}
 
     fclose(fp);
+    fprintf(fp, "%c", '\0');
+    deleteGarbage(children,niveles);
+
 }
 
-void childFIle(char message[], pid_t child, int nc,int op){
-    int fin = nc;
+void childFIle(pid_t child, int fin,int op){
     FILE *fp;
 
     char name [50];
@@ -30,35 +60,34 @@ void childFIle(char message[], pid_t child, int nc,int op){
 
     fp = fopen(name, "r");
         fgets(texto, 500, fp);
+
     if (op == 2)
-        encriptarM(texto,0,nc);
+        encriptarM(texto,0,fin);
     
     else
     {
-        desencriptar(texto,0,nc);
+        desencriptar(texto,0,fin);
     }
     
     
     fclose(fp);
 
     fp = fopen(name,"w");
-	for(int inicio = 0; inicio<fin; inicio++){
+	for(int inicio = 0; inicio<=fin; inicio++){
 		fprintf(fp, "%c", texto[inicio]);
 	}
 
     fclose(fp);
 }
 
-void concatGrandChildren(char message[], pid_t child, pid_t grandChildren[], int niveles){
+
+void concatGrandChildren(pid_t child, pid_t grandChildren[], int niveles){
     FILE *fp;
     FILE *gc;
     char name [50];
-    char texto[50];
-
+    char texto[1500];
     sprintf(name, "%d", child);
     strcat(name,".txt");
-    //printf("Nombre de archivo hijo es %s\n", name);
-
     fp = fopen(name, "w");
 
 	for(int inicio=0; inicio<niveles; inicio++){
@@ -66,41 +95,55 @@ void concatGrandChildren(char message[], pid_t child, pid_t grandChildren[], int
         sprintf(name, "%d", grandChildren[inicio]);
         strcat(name,".txt");
         gc = fopen(name, "r");
-        fgets(texto, 50, gc);
-
-		fprintf(fp, "%s", texto);
+        fgets(texto, 1400, gc);
         fclose(gc);
 
-	}
+        //printf("Nombre de archivo hijo es %s\n", name);
+        printf("texto intermedio es %s\n",texto);
+		fprintf(fp, "%s", texto);
+        strcpy(texto,"");
 
+	}
+	fprintf(fp, "%c", '\0');
     fclose(fp);
+    deleteGarbage(grandChildren,niveles);
+    
 }
 
 
-void grandChildFIle(char message[], pid_t grandChild, int inicio, int nc,int length){
-    int fin = inicio+nc;
+void grandChildFIle(char entrada[], pid_t grandChild, int inicio, int fin,int length, int op){
     int aux = inicio;
     FILE *fp;
+    char message[1500];
 
     char name [50];
     sprintf(name, "%d", grandChild);
     strcat(name,".txt");
     //printf("Nombre de archivo es %s\n", name);
 
+    seek(entrada,message,0);
     fp = fopen(name, "w");
-	for(inicio; inicio<fin; inicio++){
+    if (op == 2)
+        encriptar(message,0,fin);
+
+    else
+        desencriptarM(message,0,fin);
+
+	for(inicio; inicio<=fin; inicio++){
 		fprintf(fp, "%c", message[inicio]);
 	}
 
     if (length == inicio)
         fprintf(fp, "%c", message[inicio]);
+            fprintf(fp, "%c", '\0');
+
 
 
     fclose(fp);
 }
 
 
-void llenarVector(FILE *e, char texto [], int n) {
+void llenarVector(FILE *e, char texto []) {
     int l;
         fgets(texto, 1000, e);
 
@@ -111,7 +154,7 @@ void llenarVector(FILE *e, char texto [], int n) {
  fclose(e);
 }
 
-void abrirArchivoEntrada (char * nombre, char texto[], int n){
+void abrirArchivoEntrada (char * nombre, char texto[]){
     FILE *e;
     e = fopen(nombre, "r");
 			if (e == NULL) 
@@ -121,6 +164,17 @@ void abrirArchivoEntrada (char * nombre, char texto[], int n){
 			}
             else { 
                 //printf("Archivo cargado con exito\n");    
-                llenarVector(e,texto,n);
+                llenarVector(e,texto);
             }
 }
+
+void replace (char * nombre, char texto[]){
+        FILE *e;
+    e = fopen(nombre, "w");
+			if (e != NULL) 
+			{
+				int f = removeSpace(texto,strlen(texto));
+                fprintf(e,"%s",texto);
+			}
+    fclose(e);
+    }

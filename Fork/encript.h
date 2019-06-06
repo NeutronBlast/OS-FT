@@ -1,5 +1,20 @@
-void encriptarM(char message[], int inicio, int nc){
-	int fin = inicio+nc;
+int removeSpace(char * vector, int length){
+
+    // To keep track of non-space character count 
+    int count = 0; 
+
+    // Traverse the given string. If current character 
+    // is not space, then place it at index 'count++' 
+    for (int i = 0; vector[i]; i++) 
+        if (vector[i] != ' ') 
+            vector[count++] = vector[i]; // here count is 
+                                   // incremented 
+    vector[count] = '\0'; 
+    return strlen(vector);
+ 
+}
+
+void encriptarM(char message[], int inicio, int fin){
     int aux = inicio;
 
 	for (inicio; inicio<=fin; inicio++){
@@ -50,8 +65,7 @@ void encriptarM(char message[], int inicio, int nc){
 
 
 
-void encriptar(char message[], int inicio, int nc){
-	int fin = inicio+nc;
+void encriptar(char message[], int inicio, int fin){
     int aux = inicio;
 	char ch;	
 	for(inicio; inicio<=fin; inicio++){
