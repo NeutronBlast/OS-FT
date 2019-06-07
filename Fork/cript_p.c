@@ -13,6 +13,14 @@
 #include "manejoArchivos.h"
 #include "slice.h"
 
+int verify(int nh, int length){
+    if (nh>length)
+        return 0;
+    else if (nh>length/nh)
+        return 2;
+    return 1;
+}
+
 int main(int argc, char *argv[]) {
     setlocale(LC_ALL,"");
     struct timeval begin, end;
@@ -26,8 +34,19 @@ int main(int argc, char *argv[]) {
     char * operacion = malloc(len+2);
     strcpy(operacion, argv[1]);
 
-    NumHijos = atoi(argv[2]);
+    /*Verificar campo NumHijos*/
+    char *en;
+    NumHijos = strtol(argv[2], &en,  10);
+        if (NumHijos == 0){
+            printf("Numero de hijos debe ser un numero entero positivo mayor a 0\n");
+            return 0;
+        }
 
+        else if (NumHijos<0){
+            printf("Numero de hijos debe ser un numero entero positivo mayor a 0\n");
+            return 0;
+        }
+            
     len = strlen(argv[3]);
     /*Nombre archivo de entrada*/
     char * file1 = malloc(len+5);
@@ -43,44 +62,53 @@ int main(int argc, char *argv[]) {
     /*Texto a encriptar o desencriptar*/
     char vector [1000];
 
-    /*printf("La operacion es: %s\n",operacion); 
-    printf("El numero de enteros a ordenar es: %d\n",NumHijos); 
-    printf("El nombre del archivo desordenado es: %s\n", file1);
-    printf("El nombre del archivo ordenado es: %s\n\n", file2); */
-
     abrirArchivoEntrada(file1, vector);
 
     int i = 1;
 
     int length = strlen(vector);
+    int verif = 1;
+
+    verif = verify(NumHijos,length);
+        if (!verif){
+            printf("Numero de hijos ingresado (%d) debe ser un entero positivo menor que la longitud del texto",NumHijos);
+            printf("(%d) entre el numero de hijos (Error: Numero de hijos > %d y no se puede crear el segundo nivel",length, length/NumHijos);
+            return 0;
+        }
+
+        if (verif == 2){
+            printf("Numero de hijos ingresado es mayor a la longitud del texto\n");
+            return 0;
+        }
 
     if (operacion[1] == 'd'){
-        //printf("Toca desencriptar\n");
+        /*Toca desencriptar*/
         op = 1;
     }
 
     else if (operacion[1] == 'c'){
-        //printf("Toca encriptar\n");
+        /*Toca encriptar*/
         op = 2;
     }
 
-    /*Crear arbol de procesos*/
     int inicio=0;
     int fin = 0;
-
-if (op==2)
+    if (op == 2)
     length = removeSpace(vector,length)-2;
 
-else
+    else 
     length = strlen(vector);
 
-     printf("Text after removing blanks\n%s\n", vector);
-     printf("New length %d\n", length);
+    //printf("Texto luego de quitarle los espacios\n%s\n", vector);
+    //printf("Longitud %d\n", length);
 
+    /*Reemplazar archivo de entrada con texto sin espacios*/
     replace(file1,vector);
 
+    /*Crear arbol de procesos*/
     children(file1,length,NumHijos, inicio, op,fin,file2);
     gettimeofday(&end,NULL);
+    
     printf("Fin del programa, tiempo total de ejecucion %f segundos\n", (double)(end.tv_usec - begin.tv_usec)/1000000+ (double)(end.tv_sec - begin.tv_sec)) ;
     return 0; 
 }
