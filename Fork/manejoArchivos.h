@@ -115,13 +115,15 @@ void grandChildFIle(char entrada[], pid_t grandChild, int inicio, int fin,int le
     int aux = inicio;
     FILE *fp;
     char message[1500];
+    int nc = fin-inicio;
+    int i = 0;
 
     char name [50];
     sprintf(name, "%d", grandChild);
     strcat(name,".txt");
     //printf("Nombre de archivo es %s\n", name);
 
-    seek(entrada,message,0);
+    seek(entrada,message,inicio);
     fp = fopen(name, "w");
     if (op == 2)
         encriptar(message,0,fin);
@@ -129,12 +131,12 @@ void grandChildFIle(char entrada[], pid_t grandChild, int inicio, int fin,int le
     else
         desencriptarM(message,0,fin);
 
-	for(inicio; inicio<=fin; inicio++){
-		fprintf(fp, "%c", message[inicio]);
+	for(i = 0; i<=nc; i++){
+		fprintf(fp, "%c", message[i]);
 	}
 
-    if (length == inicio)
-        fprintf(fp, "%c", message[inicio]);
+    if (length == i)
+        fprintf(fp, "%c", message[i]);
             fprintf(fp, "%c", '\0');
 
 
