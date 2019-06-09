@@ -20,3 +20,20 @@ void abrirArchivoEntrada (char * nombre, char texto[]){
                 llenarVector(e,texto);
             }
 }
+
+void replace (char * nombre, char texto[]){
+    FILE *e;
+    e = fopen(nombre, "w");
+    		if (e == NULL) 
+				/*Si hay errores en el archivo*/
+			{
+                perror("No fue posible abrir el archivo de entrada\n");
+                exit(0);
+			}
+			if (e != NULL) 
+			{
+				int f = removeSpace(texto,strlen(texto));
+                fprintf(e,"%s",texto);
+			}
+    fclose(e);
+    }
