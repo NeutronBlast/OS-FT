@@ -40,13 +40,14 @@ void * child(void *arg){
     printf("Hi, soy el hijo %d, mi inicio es %d, termino en %d, con multiplicador %d\n\n",dat->progress,dat->inicio,dat->fin,dat->mult);
 
 
-    /* for (int progress=0; progress<dat->niveles; progress++,
-     dat->multnietos++, dat->inicionietos=dat->finNieto+1,
-     dat->finNieto=(dat->multnietos*(dat->length/dat->niveles))-1
-    ,dat->nc=dat->fin-dat->inicio){
-        if (progress+1 == dat->niveles) dat->fin = dat->length;
+     for (int progress=0; progress<dat->niveles; progress++,
+     dat->multnietos++, dat->inicionietos=dat->finNieto+1
+    ,dat->nc=dat->fin-dat->inicio,dat->finNieto=(dat->multnietos*(dat->nc/dat->niveles))-1){
+        dat->finNieto=dat->inicio+(dat->multnietos*(dat->nc/dat->niveles))-1;
+        if (progress+1 == dat->niveles) dat->finNieto = dat->fin;
+        printf("Test for nieto %d, mi inicio es %d, termino en %d, con multiplicador %d\n",progress,dat->inicionietos,dat->finNieto,dat->multnietos);
 
-        d2[progress].nietos = dat->nietos;
+   /*      d2[progress].nietos = dat->nietos;
         d2[progress].mult = dat->mult;
         d2[progress].fin = dat->fin;
         d2[progress].niveles = dat->niveles;
@@ -60,7 +61,9 @@ void * child(void *arg){
         d2[progress].progress = dat->progress;
         d2[progress].finNieto = (dat->multnietos*(dat->nc/dat->niveles))-1;
         pthread_create(&grandChildren[progress],NULL,&grandChild,(void*)&d2[progress]);
-    }*/
+        */
+    }
+    
 
     encriptarM(dat->texto,dat->inicio,dat->fin);
     printf("Mi texto es %s\n\n",dat->texto);
@@ -87,12 +90,14 @@ void hilos(char texto[],int length,int niveles, int inicio, int fin, int op, cha
 	int multnietos = 1;
     fin = (mult*(length/niveles))-1;
     int nc = fin-inicio;
-    int finNieto = (multnietos*(nc/niveles))-1;
+    int finNieto = 0;
 
 
     data d [niveles];
     for (int progress=0; progress<niveles; progress++, mult++, inicio=fin+1,fin=(mult*(length/niveles))-1
     ,nc=fin-inicio) {
+
+    finNieto = (multnietos*(nc/niveles))-1;
 
         if (progress+1 == niveles) fin = length;
         d[progress].finNieto = finNieto;
@@ -111,6 +116,8 @@ void hilos(char texto[],int length,int niveles, int inicio, int fin, int op, cha
         
 
         pthread_create(&children[progress],NULL,&child,(void*)&d[progress]);
+        pthread_join(children[progress],NULL);
+
         }
     
 
