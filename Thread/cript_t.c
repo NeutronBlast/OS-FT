@@ -7,11 +7,14 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include <sys/time.h>
+#include <semaphore.h>
+#include <pthread.h>
 #include <locale.h>
 #include "encript.h"
 #include "decypher.h"
 #include "manejoArchivos.h"
 #include "hilos.h"
+
 
 int verify(int nh, int length){
     if (nh>length)
@@ -106,6 +109,7 @@ int main(int argc, char *argv[]) {
     replace(file1,vector);
 
     /*Crear arbol de hilos antes de gettimeofday*/
+    hilos(vector,length,NumHijos, inicio, op,fin,file2);
     gettimeofday(&end,NULL);
     
     printf("Fin del programa, tiempo total de ejecucion %f segundos\n", (double)(end.tv_usec - begin.tv_usec)/1000000+ (double)(end.tv_sec - begin.tv_sec)) ;
