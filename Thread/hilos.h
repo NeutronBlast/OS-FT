@@ -25,10 +25,10 @@ void * grandChild(void *arg){
     sem_wait(&Egc);
     data* dat = (data*)arg;
     pthread_t grandChildren[dat->niveles];
-    printf("Hi, soy el nieto %d, mi inicio es %d, termino en %d, con multiplicador %d opcion %d\n",dat->nietoP,dat->inicionietos,dat->finNieto,dat->multnietos,dat->op);
+    //printf("Hi, soy el nieto %d, mi inicio es %d, termino en %d, con multiplicador %d opcion %d\n",dat->nietoP,dat->inicionietos,dat->finNieto,dat->multnietos,dat->op);
 
     if (dat->nietoP+1 == dat->niveles){
-    dat->finNieto = dat->length;
+    dat->finNieto = dat->fin;
     }
 
     if (dat->op == 2)
@@ -37,7 +37,7 @@ void * grandChild(void *arg){
     else if (dat->op == 1)
     desencriptarM(dat->texto,dat->inicionietos,dat->finNieto);
 
-    printf("Mi texto es %s\n\n",dat->texto);
+    //printf("Mi texto es %s\n\n",dat->texto);
     sem_post(&x);
     sem_post(&Egc);
 
@@ -47,10 +47,11 @@ void * grandChild(void *arg){
 
 void * child(void *arg){
     sem_wait(&Echild);
+    int rc;
     data* dat = (data*)arg;
     pthread_t grandChildren[dat->niveles];
     data d2 [dat->niveles];
-    printf("Hi, soy el hijo %d, mi inicio es %d, termino en %d, con multiplicador %d y op %d\n\n",dat->progress,dat->inicio,dat->fin,dat->mult,dat->op);
+    //printf("Hi, soy el hijo %d, mi inicio es %d, termino en %d, con multiplicador %d y op %d\n\n",dat->progress,dat->inicio,dat->fin,dat->mult,dat->op);
 
 
      for (int progress=0; progress<dat->niveles; progress++,
@@ -75,7 +76,12 @@ void * child(void *arg){
         d2[progress].finNieto = dat->finNieto;
 
  
-        pthread_create(&grandChildren[progress],NULL,&grandChild,(void*)&d2[progress]);
+        rc = pthread_create(&grandChildren[progress],NULL,&grandChild,(void*)&d2[progress]);
+
+        if (rc){
+            printf("Error creando hilo\n");
+            exit(-1);
+        }
         pthread_join(grandChildren[progress],NULL);
     }
     
@@ -87,7 +93,7 @@ void * child(void *arg){
         desencriptar(dat->texto,dat->inicio,dat->fin);
     }
     
-    printf("Mi texto es %s\n\n",dat->texto);
+    //printf("Mi texto es %s\n\n",dat->texto);
 
     if (dat->progress == 0)
         sem_post(&end);
@@ -112,7 +118,7 @@ void hilos(char texto[],int length,int niveles, int inicio, int op, int fin,  ch
     fin = (mult*(length/niveles))-1;
     int nc = fin-inicio;
     int finNieto = 0;
-
+    int q;
 
     data d [niveles];
     for (int progress=0; progress<niveles; progress++, mult++, inicio=fin+1,fin=(mult*(length/niveles))-1
@@ -120,7 +126,10 @@ void hilos(char texto[],int length,int niveles, int inicio, int op, int fin,  ch
 
     finNieto = (multnietos*(nc/niveles))-1;
 
-        if (progress+1 == niveles) fin = length;
+        if (progress+1 == niveles) {
+             fin = length;
+        }
+
         d[progress].finNieto = finNieto;
         d[progress].nietos = nietos;
         d[progress].mult = mult;
@@ -136,22 +145,23 @@ void hilos(char texto[],int length,int niveles, int inicio, int op, int fin,  ch
         d[progress].progress = progress;
         
 
-        pthread_create(&children[progress],NULL,&child,(void*)&d[progress]);
+        q= pthread_create(&children[progress],NULL,&child,(void*)&d[progress]);
+
+        if (q){
+            printf("Error creando hilo\n");
+            exit(-1);
+        }
         pthread_join(children[progress],NULL);
 
         }
     
 
     sem_wait(&end);
-    printf("Fin del programa\n");
-    printf("Texto es %s\n",texto);
+    //printf("Fin del programa\n");
+    //printf("Texto es %s\n",texto);
+    replace(salida,texto);
     sem_destroy(&end);
     sem_destroy(&endGC);
     sem_destroy(&Egc);
     sem_destroy(&Echild);
-
-    /* for (int progress=0; progress<niveles; progress++) {
-        pthread_join(children[progress],NULL);
-        printf("Termino el thread %ld\n",children[progress]);    
-    }*/
 }

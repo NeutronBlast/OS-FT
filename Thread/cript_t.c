@@ -100,10 +100,10 @@ int main(int argc, char *argv[]) {
     length = removeSpace(vector,length)-2;
 
     else 
-    length = strlen(vector);
+    length = strlen(vector)-1;
 
-    printf("Texto luego de quitarle los espacios\n%s\n", vector);
-    printf("Longitud %d\n", length);
+    //printf("Texto luego de quitarle los espacios\n%s\n", vector);
+    //printf("Longitud %d\n", length);
 
     /*Reemplazar archivo de entrada con texto sin espacios*/
     replace(file1,vector);

@@ -1,5 +1,4 @@
-void desencriptar(char message[], int inicio, int nc){
-	int fin = inicio+nc;
+void desencriptar(char message[], int inicio, int fin){
     int aux = inicio;
 	char ch;
 	
@@ -27,8 +26,7 @@ void desencriptar(char message[], int inicio, int nc){
 	}
 }
 
-void desencriptarM(char message[],int i, int nc){
-    int fin = i+nc;
+void desencriptarM(char message[],int i, int fin){
     int aux = i;
 	
 	for (i; i<=fin; i++){
