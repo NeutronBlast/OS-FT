@@ -4,6 +4,7 @@ typedef struct data_t{
     int mult;
     int fin;
 	int inicionietos;
+    int nietoP;
 	int multnietos;
     int nc;
     int op;
@@ -18,15 +19,21 @@ sem_t end;
 sem_t Echild;
 sem_t endGC;
 sem_t Egc;
+sem_t x;
 
 void * grandChild(void *arg){
+    sem_wait(&Egc);
     data* dat = (data*)arg;
     pthread_t grandChildren[dat->niveles];
-    printf("Hi, soy el nieto %d, mi inicio es %d, termino en %d, con multiplicador %d\n",dat->progress,dat->inicio,dat->fin,dat->mult);
+    printf("Hi, soy el nieto %d, mi inicio es %d, termino en %d, con multiplicador %d\n",dat->nietoP,dat->inicionietos,dat->finNieto,dat->multnietos);
+    encriptar(dat->texto,dat->inicionietos,dat->finNieto);
+    printf("Mi texto es %s\n\n",dat->texto);
 
-    if (dat->progress+1 == dat->niveles){
+    if (dat->nietoP+1 == dat->niveles){
     dat->finNieto = dat->length;
     }
+    sem_post(&x);
+    sem_post(&Egc);
 
     pthread_exit(NULL);
 
@@ -45,23 +52,25 @@ void * child(void *arg){
     ,dat->nc=dat->fin-dat->inicio,dat->finNieto=(dat->multnietos*(dat->nc/dat->niveles))-1){
         dat->finNieto=dat->inicio+(dat->multnietos*(dat->nc/dat->niveles))-1;
         if (progress+1 == dat->niveles) dat->finNieto = dat->fin;
-        printf("Test for nieto %d, mi inicio es %d, termino en %d, con multiplicador %d\n",progress,dat->inicionietos,dat->finNieto,dat->multnietos);
-
-   /*      d2[progress].nietos = dat->nietos;
+        //printf("Test for nieto %d, mi inicio es %d, termino en %d, con multiplicador %d\n",progress,dat->inicionietos,dat->finNieto,dat->multnietos);
+        sem_wait(&x);
+        d2[progress].nietos = dat->nietos;
         d2[progress].mult = dat->mult;
         d2[progress].fin = dat->fin;
         d2[progress].niveles = dat->niveles;
-        d2[progress].inicionietos = dat->inicio;
+        d2[progress].inicionietos = dat->inicionietos;
         d2[progress].multnietos = dat->multnietos;
         d2[progress].nc = dat->nc;
         d2[progress].texto = dat->texto;
         d2[progress].op = dat->op;
         d2[progress].length = dat->length;
         d2[progress].inicio = dat->inicio;
-        d2[progress].progress = dat->progress;
-        d2[progress].finNieto = (dat->multnietos*(dat->nc/dat->niveles))-1;
+        d2[progress].nietoP = progress;
+        d2[progress].finNieto = dat->finNieto;
+
+ 
         pthread_create(&grandChildren[progress],NULL,&grandChild,(void*)&d2[progress]);
-        */
+        pthread_join(grandChildren[progress],NULL);
     }
     
 
@@ -81,7 +90,7 @@ void hilos(char texto[],int length,int niveles, int inicio, int fin, int op, cha
     sem_init(&end,0,0);
     sem_init(&Echild,0,1);
     sem_init(&Egc,0,1);
-
+    sem_init(&x,0,1);
     
     pthread_t children[niveles];
     int nietos = 0;
