@@ -25,13 +25,19 @@ void * grandChild(void *arg){
     sem_wait(&Egc);
     data* dat = (data*)arg;
     pthread_t grandChildren[dat->niveles];
-    printf("Hi, soy el nieto %d, mi inicio es %d, termino en %d, con multiplicador %d\n",dat->nietoP,dat->inicionietos,dat->finNieto,dat->multnietos);
-    encriptar(dat->texto,dat->inicionietos,dat->finNieto);
-    printf("Mi texto es %s\n\n",dat->texto);
+    printf("Hi, soy el nieto %d, mi inicio es %d, termino en %d, con multiplicador %d opcion %d\n",dat->nietoP,dat->inicionietos,dat->finNieto,dat->multnietos,dat->op);
 
     if (dat->nietoP+1 == dat->niveles){
     dat->finNieto = dat->length;
     }
+
+    if (dat->op == 2)
+    encriptar(dat->texto,dat->inicionietos,dat->finNieto);
+
+    else if (dat->op == 1)
+    desencriptarM(dat->texto,dat->inicionietos,dat->finNieto);
+
+    printf("Mi texto es %s\n\n",dat->texto);
     sem_post(&x);
     sem_post(&Egc);
 
@@ -44,7 +50,7 @@ void * child(void *arg){
     data* dat = (data*)arg;
     pthread_t grandChildren[dat->niveles];
     data d2 [dat->niveles];
-    printf("Hi, soy el hijo %d, mi inicio es %d, termino en %d, con multiplicador %d\n\n",dat->progress,dat->inicio,dat->fin,dat->mult);
+    printf("Hi, soy el hijo %d, mi inicio es %d, termino en %d, con multiplicador %d y op %d\n\n",dat->progress,dat->inicio,dat->fin,dat->mult,dat->op);
 
 
      for (int progress=0; progress<dat->niveles; progress++,
@@ -73,8 +79,14 @@ void * child(void *arg){
         pthread_join(grandChildren[progress],NULL);
     }
     
-
+    if (dat->op == 2)
     encriptarM(dat->texto,dat->inicio,dat->fin);
+
+    else if (dat->op == 1)
+    {
+        desencriptar(dat->texto,dat->inicio,dat->fin);
+    }
+    
     printf("Mi texto es %s\n\n",dat->texto);
 
     if (dat->progress == 0)
@@ -86,7 +98,7 @@ void * child(void *arg){
 }
 
 
-void hilos(char texto[],int length,int niveles, int inicio, int fin, int op, char salida[]){
+void hilos(char texto[],int length,int niveles, int inicio, int op, int fin,  char salida[]){
     sem_init(&end,0,0);
     sem_init(&Echild,0,1);
     sem_init(&Egc,0,1);
