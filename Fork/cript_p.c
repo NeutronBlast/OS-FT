@@ -29,6 +29,12 @@ int main(int argc, char *argv[]) {
     int NumHijos;
     int op = 0;
 
+    if (!argv[1] || !argv[2] || !argv[3] || !argv[4]){
+        printf("Falta un argumento\n");
+        return 0;
+    }
+
+
     /*Encriptar o desencriptar*/
     size_t len = strlen(argv[1]);
     char * operacion = malloc(len+2);
