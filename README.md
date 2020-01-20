@@ -35,7 +35,25 @@ Another very well known algorithm is "Murcielago code", its substitution is the 
 
 M | U | R | C | I | E | L | A | G | O
 
-0   1   2   3   4   5   6   7   8   9
+M = 0
+
+U = 1
+
+R = 2
+
+C = 3
+
+I = 4
+
+E = 5
+
+L = 6
+
+A = 7
+
+G = 8
+
+O = 9
 
 This repository has 3 programs written in C of the crypting and decrypting program, a sequential version and 2 concurrent versions, one with processes and one with threads, in the concurrent versions, given that crypting/descrypting is clearly parallelizable it will be built with a 3 level tree of processes/threads: root, middle and leaves. In order to cypher, the root process will receive a file with the word that will be modified, the blank spaces will be deleted, the leaves will apply the caesar's code, the middle processes/threads will apply Murcielago's code for the second phase of substitution, the root process will receive the cyphered text of all their children and will concatenate in order the content of the children's files to finally obtain the cyphered text and save it in another text file.
 
