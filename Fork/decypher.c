@@ -2,10 +2,9 @@
 
 void desencriptar(char message[], int inicio, int nc){
 	int fin = inicio+nc;
-    int aux = inicio;
 	char ch;
 	
-	for(inicio; inicio<=fin; inicio++){
+	for(inicio=inicio; inicio<=fin; inicio++){
 		ch = message[inicio];
 		
 		if(ch >= 'a' && ch <= 'z'){
@@ -31,9 +30,8 @@ void desencriptar(char message[], int inicio, int nc){
 
 void desencriptarM(char message[],int i, int nc){
     int fin = i+nc;
-    int aux = i;
 	
-	for (i; i<=fin; i++){
+	for (i=i; i<=fin; i++){
 		switch(message[i]){
 			
 			{case '0':

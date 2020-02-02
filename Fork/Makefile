@@ -1,9 +1,12 @@
-CC=gcc
-CFLAGS=-I.
-DEPS = encript.h decypher.h manejoArchivos.h slice.h
+CC = gcc
+CFLAGS = -Wall
+LDFLAGS =
+OBJFILES = encript.o decypher.o manejoArchivos.o slice.o cript_p.o
+TARGET = cript_p
+all = $(TARGET)
 
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+$(TARGET): $(OBJFILES)
+		$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES) $(LDFLAGS)
 
-ordenArchivo-p: cript_p.o 
-	$(CC) -o cript_p cript_p.o
+clean:
+		rm -f $(OBJFILES) $(TARGET) *~

@@ -8,9 +8,9 @@
 #include <errno.h>
 #include <sys/time.h>
 #include <locale.h>
+#include "manejoArchivos.h"
 #include "encript.h"
 #include "decypher.h"
-#include "manejoArchivos.h"
 #include "slice.h"
 
 int verify(int nh, int length){
